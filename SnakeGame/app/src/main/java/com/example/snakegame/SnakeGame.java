@@ -1,4 +1,4 @@
-package com.gamecodeschool.c17snake;
+package com.example.snakegame;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;

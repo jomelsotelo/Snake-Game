@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Snake</string>
     <string name="tap_to_play">Tap To Play!</string>
+    <string name="names">Jomel &amp; Edmar</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
 </resources>

@@ -3,10 +3,14 @@ package com.example.snake;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -48,6 +52,11 @@ class SnakeGame extends SurfaceView implements Runnable {
     // And an apple
     private Apple mApple;
 
+    // Typeface for custom font
+    private Typeface mCustomFont;
+    // Background image
+    private Bitmap mBackgroundBitmap;
+
     // An array list for the game objects such as snake
 //    private ArrayList<GameObject> gameObjects;
 
@@ -55,6 +64,12 @@ class SnakeGame extends SurfaceView implements Runnable {
     // from SnakeActivity
     public SnakeGame(Context context, Point size) {
         super(context);
+
+        // Load custom font
+        AssetManager assetManager = context.getAssets();
+        mCustomFont = Typeface.createFromAsset(assetManager, "Custom.ttf");
+        // Load background image
+        mBackgroundBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.background);
 
         // Work out how many pixels each block is
         int blockSize = size.x / NUM_BLOCKS_WIDE;
@@ -76,7 +91,7 @@ class SnakeGame extends SurfaceView implements Runnable {
             mSP = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
         }
         try {
-            AssetManager assetManager = context.getAssets();
+//            AssetManager assetManager = context.getAssets();
             AssetFileDescriptor descriptor;
 
             // Prepare the sounds in memory
@@ -93,6 +108,9 @@ class SnakeGame extends SurfaceView implements Runnable {
         // Initialize the drawing objects
         mSurfaceHolder = getHolder();
         mPaint = new Paint();
+
+        // Set custom font to Paint
+        mPaint.setTypeface(mCustomFont);
 
         // Call the constructors of our two game objects
         mApple = new Apple(context,
@@ -197,8 +215,12 @@ class SnakeGame extends SurfaceView implements Runnable {
         if (mSurfaceHolder.getSurface().isValid()) {
             mCanvas = mSurfaceHolder.lockCanvas();
 
+            // Draw background image
+            Rect destRect = new Rect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
+            mCanvas.drawBitmap(mBackgroundBitmap, null, destRect, null);
+
             // Fill the screen with a color
-            mCanvas.drawColor(Color.argb(255, 26, 128, 182));
+//            mCanvas.drawColor(Color.argb(255, 26, 128, 182));
 
             // Set the size and color of the mPaint for the text
             mPaint.setColor(Color.argb(255, 255, 255, 255));
@@ -208,9 +230,9 @@ class SnakeGame extends SurfaceView implements Runnable {
             mCanvas.drawText("" + mScore, 20, 120, mPaint);
 
             // Draws the name on the top right corner
-            mPaint.setTextSize(50);
+            mPaint.setTextSize(70);
             mCanvas.drawText(getResources().getString(R.string.names),
-                    mCanvas.getWidth()-360, 70, mPaint);
+                    mCanvas.getWidth()-540, 70, mPaint);
 
             // Draw the apple and the snake
             mApple.draw(mCanvas, mPaint);
@@ -231,7 +253,7 @@ class SnakeGame extends SurfaceView implements Runnable {
                 // We will give this an international upgrade soon
                 // mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
                 mCanvas.drawText(getResources().getString(R.string.tap_to_play),
-                        200, 700, mPaint);
+                        400, 600, mPaint);
             }
 
             // Unlock the mCanvas and reveal the graphics for this frame

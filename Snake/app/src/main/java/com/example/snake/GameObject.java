@@ -2,20 +2,19 @@ package com.example.snake;
 
 import android.graphics.Point;
 abstract class GameObject  {
-    protected Point location;
+    protected Point range;
     protected int size;
 
     public GameObject(Point location, int size){
-        this.location = location;
+        this.range = location;
         this.size = size;
     }
 
     public Point getLocation(){
-        return location;
+        return range;
     }
 
     public int getSize(){
         return size;
     }
-
 }

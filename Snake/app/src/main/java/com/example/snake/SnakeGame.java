@@ -57,6 +57,12 @@ class SnakeGame extends SurfaceView implements Runnable {
     // Background image
     private Bitmap mBackgroundBitmap;
 
+    private int pauseX;
+    private int pauseY;
+
+    private boolean mNewGame = true;
+
+
     // An array list for the game objects such as snake
 //    private ArrayList<GameObject> gameObjects;
 
@@ -204,6 +210,7 @@ class SnakeGame extends SurfaceView implements Runnable {
             // Pause the game ready to start again
             mSP.play(mCrashID, 1, 1, 0, 0, 1);
 
+            mNewGame = true;
             mPaused = true;
         }
 
@@ -239,11 +246,16 @@ class SnakeGame extends SurfaceView implements Runnable {
             mSnake.draw(mCanvas, mPaint);
 
             //Draw the pause button
-            mCanvas.drawText(getResources().getString(R.string.pause),
-                    20, mCanvas.getHeight()-20, mPaint);
+            pauseX = 20;
+            pauseY = mCanvas.getHeight() - 20;
+            if(!mPaused) {
+                mPaint.setTextSize(70);
+                mCanvas.drawText(getResources().getString(R.string.pause),
+                        pauseX, pauseY, mPaint);
+            }
 
             // Draw some text while paused
-            if (mPaused) {
+            if (mPaused && mNewGame==true) {
 
                 // Set the size and color of the mPaint for the text
                 mPaint.setColor(Color.argb(255, 255, 255, 255));
@@ -254,6 +266,10 @@ class SnakeGame extends SurfaceView implements Runnable {
                 // mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
                 mCanvas.drawText(getResources().getString(R.string.tap_to_play),
                         400, 600, mPaint);
+            } else if (mPaused && mNewGame==false) {
+                mPaint.setTextSize(250);
+                mCanvas.drawText(getResources().getString(R.string.resume),
+                        600, 600, mPaint);
             }
 
             // Unlock the mCanvas and reveal the graphics for this frame
@@ -263,22 +279,34 @@ class SnakeGame extends SurfaceView implements Runnable {
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
+        int touchX = (int) motionEvent.getX();
+        int touchY = (int) motionEvent.getY();
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_UP:
-                if (mPaused) {
+                if (mPaused && mNewGame==false) {
+                        mPaused = false;
+                        return true;
+                } else {
+                    // If the game is running, it checks if the touch event is within the pause button
+                    if (touchX >= pauseX && touchX <= pauseX + 220 &&
+                            touchY <= pauseY && touchY >= pauseY - 100 && !mSnake.detectDeath()) {
+                        mPaused = true;
+                        return true;
+                    }
+                }
+                if (mPaused && mNewGame==true) {
                     mPaused = false;
                     newGame();
-
-                    // Don't want to process snake direction for this tap
+                    mNewGame = false;
                     return true;
                 }
-
-                // Let the Snake class handle the input
-                mSnake.switchHeading(motionEvent);
+                // If the touch event is not within any button and the game is running, let the Snake class handle the input
+                if (!mPaused) {
+                    mSnake.switchHeading(motionEvent);
+                }
                 break;
             default:
                 break;
-
         }
         return true;
     }

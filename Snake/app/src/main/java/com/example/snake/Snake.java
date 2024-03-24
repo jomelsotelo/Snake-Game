@@ -12,7 +12,7 @@ import android.view.MotionEvent;
 import java.util.ArrayList;
 //import com.example.snake.R;
 
-class Snake {
+class Snake implements Movable, Drawable {
 
     // The location in the grid of all the segments
     private ArrayList<Point> segmentLocations;
@@ -43,6 +43,8 @@ class Snake {
 
     // A bitmap for the body
     private Bitmap mBitmapBody;
+    private Bitmap mBitmapHead;
+    private Matrix matrix = new Matrix();
 
 
     Snake(Context context, Point mr, int ss) {
@@ -128,7 +130,7 @@ class Snake {
     }
 
 
-    void move() {
+    public void move() {
         // Move the body
         // Start at the back and move it
         // to the position of the segment in front of it
@@ -206,14 +208,16 @@ class Snake {
         return false;
     }
 
-    void draw(Canvas canvas, Paint paint) {
+    public void draw(Canvas canvas, Paint paint) {
 
         // Don't run this code if ArrayList has nothing in it
         if (!segmentLocations.isEmpty()) {
             // All the code from this method goes here
             // Draw the head
+            matrix.reset();
             switch (heading) {
                 case RIGHT:
+
                     canvas.drawBitmap(mBitmapHeadRight,
                             segmentLocations.get(0).x
                                     * mSegmentSize,
@@ -222,6 +226,7 @@ class Snake {
                     break;
 
                 case LEFT:
+
                     canvas.drawBitmap(mBitmapHeadLeft,
                             segmentLocations.get(0).x
                                     * mSegmentSize,
@@ -230,21 +235,28 @@ class Snake {
                     break;
 
                 case UP:
+
                     canvas.drawBitmap(mBitmapHeadUp,
                             segmentLocations.get(0).x
                                     * mSegmentSize,
                             segmentLocations.get(0).y
                                     * mSegmentSize, paint);
+
+
                     break;
 
                 case DOWN:
+
                     canvas.drawBitmap(mBitmapHeadDown,
                             segmentLocations.get(0).x
                                     * mSegmentSize,
                             segmentLocations.get(0).y
                                     * mSegmentSize, paint);
+
+
                     break;
             }
+
 
             // Draw the snake body one block at a time
             for (int i = 1; i < segmentLocations.size(); i++) {
@@ -297,4 +309,6 @@ class Snake {
             }
         }
     }
+
 }
+

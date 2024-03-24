@@ -43,6 +43,8 @@ class Snake extends GameObject implements Movable, Drawable{
 
     // A bitmap for the body
     private Bitmap mBitmapBody;
+    private Bitmap mBitmapHead;
+    private Matrix matrix = new Matrix();
 
 
     Snake(Context context, Point mr, int ss) {
@@ -211,7 +213,43 @@ class Snake extends GameObject implements Movable, Drawable{
     @Override
     public void draw(Canvas canvas, Paint paint) {
         if (!segmentLocations.isEmpty()) {
-            drawHead(canvas, paint, heading, segmentLocations.get(0));
+            // All the code from this method goes here
+            // Draw the head
+            switch (heading) {
+                case RIGHT:
+                    canvas.drawBitmap(mBitmapHeadRight,
+                            segmentLocations.get(0).x
+                                    * mSegmentSize,
+                            segmentLocations.get(0).y
+                                    * mSegmentSize, paint);
+                    break;
+
+                case LEFT:
+                    canvas.drawBitmap(mBitmapHeadLeft,
+                            segmentLocations.get(0).x
+                                    * mSegmentSize,
+                            segmentLocations.get(0).y
+                                    * mSegmentSize, paint);
+                    break;
+
+                case UP:
+                    canvas.drawBitmap(mBitmapHeadUp,
+                            segmentLocations.get(0).x
+                                    * mSegmentSize,
+                            segmentLocations.get(0).y
+                                    * mSegmentSize, paint);
+                    break;
+
+                case DOWN:
+                    canvas.drawBitmap(mBitmapHeadDown,
+                            segmentLocations.get(0).x
+                                    * mSegmentSize,
+                            segmentLocations.get(0).y
+                                    * mSegmentSize, paint);
+                    break;
+            }
+
+            // Draw the snake body one block at a time
             for (int i = 1; i < segmentLocations.size(); i++) {
                 canvas.drawBitmap(mBitmapBody, segmentLocations.get(i).x * mSegmentSize,
                         segmentLocations.get(i).y * mSegmentSize, paint);
@@ -281,4 +319,6 @@ class Snake extends GameObject implements Movable, Drawable{
             }
         }
     }
+
 }
+

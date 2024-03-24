@@ -62,10 +62,6 @@ class SnakeGame extends SurfaceView implements Runnable {
 
     private boolean mNewGame = true;
 
-
-    // An array list for the game objects such as snake
-//    private ArrayList<GameObject> gameObjects;
-
     // This is the constructor method that gets called
     // from SnakeActivity
     public SnakeGame(Context context, Point size) {
@@ -109,7 +105,7 @@ class SnakeGame extends SurfaceView implements Runnable {
 
         } catch (IOException e) {
             // Error
-        }
+         }
 
         // Initialize the drawing objects
         mSurfaceHolder = getHolder();
@@ -226,15 +222,8 @@ class SnakeGame extends SurfaceView implements Runnable {
             Rect destRect = new Rect(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
             mCanvas.drawBitmap(mBackgroundBitmap, null, destRect, null);
 
-            // Fill the screen with a color
-//            mCanvas.drawColor(Color.argb(255, 26, 128, 182));
-
-            // Set the size and color of the mPaint for the text
-            mPaint.setColor(Color.argb(255, 255, 255, 255));
-            mPaint.setTextSize(120);
-
             // Draw the score
-            mCanvas.drawText("" + mScore, 20, 120, mPaint);
+            draw(mScore);
 
             // Draws the name on the top right corner
             mPaint.setTextSize(70);
@@ -242,10 +231,10 @@ class SnakeGame extends SurfaceView implements Runnable {
                     mCanvas.getWidth()-540, 70, mPaint);
 
             // Draw the apple and the snake
-            mApple.draw(mCanvas, mPaint);
-            mSnake.draw(mCanvas, mPaint);
+            draw(mApple);
+            draw(mSnake);
 
-            //Draw the pause button
+            //Draw the pause button when game is running
             pauseX = 20;
             pauseY = mCanvas.getHeight() - 20;
             if(!mPaused) {
@@ -262,8 +251,6 @@ class SnakeGame extends SurfaceView implements Runnable {
                 mPaint.setTextSize(250);
 
                 // Draw the message
-                // We will give this an international upgrade soon
-                // mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
                 mCanvas.drawText(getResources().getString(R.string.tap_to_play),
                         400, 600, mPaint);
             } else if (mPaused && mNewGame==false) {
@@ -275,6 +262,27 @@ class SnakeGame extends SurfaceView implements Runnable {
             // Unlock the mCanvas and reveal the graphics for this frame
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
         }
+    }
+
+    // Overloaded draw method to draw snake
+    public void draw(Snake snake) {
+            // Draw the snake
+            snake.draw(mCanvas, mPaint);
+    }
+
+    // Overloaded draw method to draw apple
+    public void draw(Apple apple) {
+            // Draw the apple
+            apple.draw(mCanvas, mPaint);
+    }
+
+    // Overloaded draw method to draw score
+    public void draw(int score) {
+            // Set the size and color of the mPaint for the text
+            mPaint.setColor(Color.argb(255, 255, 255, 255));
+            mPaint.setTextSize(120);
+            // Draw the score
+            mCanvas.drawText("" + score, 20, 120, mPaint);
     }
 
     @Override

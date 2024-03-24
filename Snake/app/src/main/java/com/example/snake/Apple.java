@@ -33,6 +33,25 @@ class Apple extends GameObject implements Drawable{
         mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, s, s, false);
     }
 
+    // Overloaded the apple constructor to specify the location explicitly
+    Apple(Context context, Point sr, int s, Point initialLocation) {
+        super(sr, s);
+        location = initialLocation;
+
+        mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.apple);
+        mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, s, s, false);
+    }
+
+    // Overloading the apple constructor to specify the location using individual coordinates
+    Apple(Context context, Point sr, int s, int x, int y) {
+        super(sr, s);
+        location.x = x;
+        location.y = y;
+
+        mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.apple);
+        mBitmapApple = Bitmap.createScaledBitmap(mBitmapApple, s, s, false);
+    }
+
     // This is called every time an apple is eaten
     void spawn(){
         // Choose two random values and place the apple

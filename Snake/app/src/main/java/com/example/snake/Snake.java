@@ -12,7 +12,7 @@ import android.view.MotionEvent;
 import java.util.ArrayList;
 //import com.example.snake.R;
 
-class Snake {
+class Snake extends GameObject implements Movable, Drawable{
 
     // The location in the grid of all the segments
     private ArrayList<Point> segmentLocations;
@@ -46,14 +46,14 @@ class Snake {
 
 
     Snake(Context context, Point mr, int ss) {
-
+        super(mr, ss);
         // Initialize our ArrayList
         segmentLocations = new ArrayList<>();
 
         // Initialize the segment size and movement
         // range from the passed in parameters
-        mSegmentSize = ss;
-        mMoveRange = mr;
+        mSegmentSize = size;
+        mMoveRange = range;
 
         // Create and scale the bitmaps
         mBitmapHeadRight = BitmapFactory
@@ -77,7 +77,7 @@ class Snake {
         // in the correct direction
         mBitmapHeadRight = Bitmap
                 .createScaledBitmap(mBitmapHeadRight,
-                        ss, ss, false);
+                        size, size, false);
 
         // A matrix for scaling
         Matrix matrix = new Matrix();
@@ -85,20 +85,20 @@ class Snake {
 
         mBitmapHeadLeft = Bitmap
                 .createBitmap(mBitmapHeadRight,
-                        0, 0, ss, ss, matrix, true);
+                        0, 0, size, size, matrix, true);
 
         // A matrix for rotating
         matrix.preRotate(-90);
         mBitmapHeadUp = Bitmap
                 .createBitmap(mBitmapHeadRight,
-                        0, 0, ss, ss, matrix, true);
+                        0, 0, size, size, matrix, true);
 
         // Matrix operations are cumulative
         // so rotate by 180 to face down
         matrix.preRotate(180);
         mBitmapHeadDown = Bitmap
                 .createBitmap(mBitmapHeadRight,
-                        0, 0, ss, ss, matrix, true);
+                        0, 0, size, size, matrix, true);
 
         // Create and scale the body
         mBitmapBody = BitmapFactory
@@ -107,11 +107,11 @@ class Snake {
 
         mBitmapBody = Bitmap
                 .createScaledBitmap(mBitmapBody,
-                        ss, ss, false);
+                        size, size, false);
 
         // The halfway point across the screen in pixels
         // Used to detect which side of screen was pressed
-        halfWayPoint = mr.x * ss / 2;
+        halfWayPoint = range.x * size / 2;
     }
 
     // Get the snake ready for a new game
@@ -127,8 +127,9 @@ class Snake {
         segmentLocations.add(new Point(w / 2, h / 2));
     }
 
-
-    void move() {
+    // Dynamic Polymorphism using method overriding
+    @Override
+    public void move() {
         // Move the body
         // Start at the back and move it
         // to the position of the segment in front of it
@@ -206,57 +207,40 @@ class Snake {
         return false;
     }
 
-    void draw(Canvas canvas, Paint paint) {
-
-        // Don't run this code if ArrayList has nothing in it
+    // Dynamic Polymorphism using method overriding
+    @Override
+    public void draw(Canvas canvas, Paint paint) {
         if (!segmentLocations.isEmpty()) {
-            // All the code from this method goes here
-            // Draw the head
-            switch (heading) {
-                case RIGHT:
-                    canvas.drawBitmap(mBitmapHeadRight,
-                            segmentLocations.get(0).x
-                                    * mSegmentSize,
-                            segmentLocations.get(0).y
-                                    * mSegmentSize, paint);
-                    break;
-
-                case LEFT:
-                    canvas.drawBitmap(mBitmapHeadLeft,
-                            segmentLocations.get(0).x
-                                    * mSegmentSize,
-                            segmentLocations.get(0).y
-                                    * mSegmentSize, paint);
-                    break;
-
-                case UP:
-                    canvas.drawBitmap(mBitmapHeadUp,
-                            segmentLocations.get(0).x
-                                    * mSegmentSize,
-                            segmentLocations.get(0).y
-                                    * mSegmentSize, paint);
-                    break;
-
-                case DOWN:
-                    canvas.drawBitmap(mBitmapHeadDown,
-                            segmentLocations.get(0).x
-                                    * mSegmentSize,
-                            segmentLocations.get(0).y
-                                    * mSegmentSize, paint);
-                    break;
-            }
-
-            // Draw the snake body one block at a time
+            drawHead(canvas, paint, heading, segmentLocations.get(0));
             for (int i = 1; i < segmentLocations.size(); i++) {
-                canvas.drawBitmap(mBitmapBody,
-                        segmentLocations.get(i).x
-                                * mSegmentSize,
-                        segmentLocations.get(i).y
-                                * mSegmentSize, paint);
+                canvas.drawBitmap(mBitmapBody, segmentLocations.get(i).x * mSegmentSize,
+                        segmentLocations.get(i).y * mSegmentSize, paint);
             }
         }
     }
 
+    // Overloading drawHead for drawing the head with specific coordinates
+    private void drawHead(Canvas canvas, Paint paint, Heading direction, int x, int y) {
+        switch (direction) {
+            case RIGHT:
+                canvas.drawBitmap(mBitmapHeadRight, x * mSegmentSize, y * mSegmentSize, paint);
+                break;
+            case LEFT:
+                canvas.drawBitmap(mBitmapHeadLeft, x * mSegmentSize, y * mSegmentSize, paint);
+                break;
+            case UP:
+                canvas.drawBitmap(mBitmapHeadUp, x * mSegmentSize, y * mSegmentSize, paint);
+                break;
+            case DOWN:
+                canvas.drawBitmap(mBitmapHeadDown, x * mSegmentSize, y * mSegmentSize, paint);
+                break;
+        }
+    }
+
+    // Overloading drawHead for drawing the head with Point parameter
+    private void drawHead(Canvas canvas, Paint paint, Heading direction, Point location) {
+        drawHead(canvas, paint, direction, location.x, location.y);
+    }
 
     // Handle changing direction
     void switchHeading(MotionEvent motionEvent) {

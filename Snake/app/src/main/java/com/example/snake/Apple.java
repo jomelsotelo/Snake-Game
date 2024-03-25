@@ -10,6 +10,9 @@ import java.util.Random;
 
 class Apple extends GameObject implements Drawable{
 
+    private static final int HIDE_LOCATION_X = -10;
+    private static final int OFFSET = 1;
+
     // The location of the apple on the grid
     // Not in pixels
     private Point location = new Point();
@@ -21,7 +24,7 @@ class Apple extends GameObject implements Drawable{
     Apple(Context context, Point sr, int s){
         super(sr, s);
         // Hide the apple off-screen until the game starts
-        location.x = -10;
+        location.x = HIDE_LOCATION_X;
 
         // Load the image to the bitmap
         mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.apple);
@@ -53,8 +56,8 @@ class Apple extends GameObject implements Drawable{
     void spawn(){
         // Choose two random values and place the apple
         Random random = new Random();
-        location.x = random.nextInt(range.x) + 1;
-        location.y = random.nextInt(range.y - 1) + 1;
+        location.x = random.nextInt(range.x) + OFFSET;
+        location.y = random.nextInt(range.y - OFFSET) + OFFSET;
     }
 
     //Dynamic Polymorphism

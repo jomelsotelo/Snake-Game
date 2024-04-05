@@ -27,10 +27,12 @@ class Snake extends GameObject implements Movable, Drawable{
     // horizontally in pixels?
     private int halfWayPoint;
 
+
     // For tracking movement Heading
     private enum Heading {
         UP, RIGHT, DOWN, LEFT
     }
+
 
     // Start by heading to the right
     private Heading heading = Heading.RIGHT;
@@ -241,9 +243,10 @@ class Snake extends GameObject implements Movable, Drawable{
         drawHead(canvas, paint, direction, location.x, location.y);
     }
 
+
+
     // Handle changing direction
     void switchHeading(MotionEvent motionEvent) {
-
         // Is the tap on the right hand side?
         if (motionEvent.getX() >= halfWayPoint) {
             switch (heading) {
@@ -279,7 +282,7 @@ class Snake extends GameObject implements Movable, Drawable{
                     break;
             }
         }
-    }
 
+    }
 }
 
